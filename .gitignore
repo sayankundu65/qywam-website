@@ -1,0 +1,17 @@
+# Vercel build output & project config
+.vercel
+
+# Node dependencies (if any added in future)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env*.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
