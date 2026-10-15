@@ -1,7 +1,7 @@
 // Vercel serverless function: POST /api/contact
 // Required environment variables (set in Vercel > Project > Settings > Environment Variables):
 //   RESEND_API_KEY      - API key from https://resend.com
-//   CONTACT_TO_EMAIL    - inbox that receives enquiries
+//   CONTACT_TO_EMAIL    - inbox that receives enquiries (default: contact@qywam.com)
 //   CONTACT_FROM_EMAIL  - verified sender, e.g. "Qywam <hello@yourdomain>"
 // Optional: ALLOWED_ORIGINS - comma separated list (default: https://www.qywam.com)
 
@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
   if (Object.keys(errors).length) return res.status(400).json({ ok: false, errors });
 
   const key = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL || 'contact@qywam.com';
   const from = process.env.CONTACT_FROM_EMAIL;
   if (!key || !to || !from) {
     console.error('contact: email delivery is not configured');
