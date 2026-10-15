@@ -31,15 +31,15 @@
       ]
     },
     {
-      "source": "/assets/three.min.js",
+      "source": "/assets/(three.min.js|vendor/(.*))",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "source": "/assets/(app|analytics|contact).js",
+      "source": "/assets/(app|analytics|contact|blob-engine|services|services-env).js",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }]
     },
     {
-      "source": "/assets/(site.css|og-image.jpg)",
+      "source": "/assets/(site.css|services.css|og-image.jpg)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
     },
     {

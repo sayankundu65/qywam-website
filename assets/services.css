@@ -1,0 +1,740 @@
+:root {
+  --bg-matte: #cfcfcf;
+  --bg-card: #cfcfcf;
+  --ink: #0a0a0a;
+  --mute: #4a4a4a;
+  --line: rgba(0, 0, 0, 0.09);
+  --accent-green: #00ff66;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --header-h: 56px;
+  --gutter: 6px;
+  --panel-w: 88vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light;
+  scroll-behavior: auto;
+  background-color: var(--bg-matte);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-matte);
+  color: var(--ink);
+  font-family: 'Hanken Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Skip link */
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -80px;
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 99px;
+  font-size: 13px;
+  z-index: 1000;
+  text-decoration: none;
+  transition: top 0.25s var(--ease);
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   TOP BAR (Mantis layout: Wordmark | Our Services | City Time Contact)
+   ========================================================================== */
+.services-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  pointer-events: none;
+  background: rgba(207, 207, 207, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.top-bar-left,
+.top-bar-center,
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.top-bar-left .mark {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  text-decoration: none;
+  transition: opacity 0.2s var(--ease);
+}
+.top-bar-left .mark:hover {
+  opacity: 0.7;
+}
+
+.section-title {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.top-bar-right {
+  gap: 24px;
+}
+
+.live-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 12px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.live-clock .clock-city {
+  font-weight: 500;
+}
+
+.live-clock .clock-time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.top-contact-link {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.top-contact-link:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ==========================================================================
+   WEBGL CANVAS LAYER
+   ========================================================================== */
+#c {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.5s ease;
+}
+
+#fallback-notice {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 90;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--mute);
+}
+.no-webgl #fallback-notice {
+  display: block;
+}
+
+/* ==========================================================================
+   HORIZONTAL SERVICES STAGE
+   ========================================================================== */
+#services-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: clip;
+  background: var(--bg-matte);
+}
+
+.horizontal-strip {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  padding-left: 6vw;
+  padding-right: 6vw;
+  will-change: transform;
+}
+
+/* Service Panels (Exact Mantis Card proportions) */
+.service-panel {
+  flex: 0 0 var(--panel-w);
+  height: calc(100vh - var(--header-h) - 24px);
+  height: calc(100dvh - var(--header-h) - 24px);
+  max-height: 840px;
+  margin-right: var(--gutter);
+  background: var(--bg-card);
+  border-radius: 0px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  contain: layout paint;
+}
+
+/* Thin vertical separator between cards */
+.service-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Left Content Column */
+.panel-info {
+  flex: 0 0 46%;
+  max-width: 520px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 4vw, 56px);
+  z-index: 3;
+}
+
+.panel-text-block {
+  width: 100%;
+}
+
+/* Big Heading with bright neon green pill */
+.panel-heading {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(44px, 5.2vw, 82px);
+  letter-spacing: -0.04em;
+  line-height: 0.94;
+  margin: 0 0 28px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  color: var(--ink);
+}
+
+.panel-heading .h-text {
+  display: inline-block;
+}
+
+.panel-heading .h-pill {
+  background: var(--accent-green);
+  color: #000;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: clamp(16px, 1.8vw, 24px);
+  padding: 4px 18px;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.1;
+  vertical-align: middle;
+  box-shadow: 0 2px 10px rgba(0, 255, 102, 0.35);
+}
+
+/* Lead text */
+.panel-lead {
+  font-weight: 600;
+  font-size: clamp(16px, 1.25vw, 20px);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 18px 0;
+  max-width: 440px;
+}
+
+/* Narrative paragraphs */
+.panel-desc {
+  font-weight: 400;
+  font-size: clamp(13px, 0.95vw, 14.5px);
+  line-height: 1.55;
+  color: #2b2b2b;
+  margin: 0 0 12px 0;
+  max-width: 420px;
+}
+
+/* Related Services Bottom Left */
+.panel-related {
+  margin-top: 24px;
+}
+
+.related-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.related-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #111;
+}
+
+.related-list li {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Right Visual Slot (Exactly 1 Blob per card lives here) */
+.panel-visual {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   PANEL 7: "So why work with us?" (Matches Mantis Frame 005)
+   ========================================================================== */
+.panel-why {
+  background: var(--bg-card);
+}
+
+.why-split-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.why-left-lead {
+  flex: 0 0 42%;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(28px, 4vw, 56px);
+}
+
+.why-huge-title {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(48px, 5.5vw, 86px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: var(--ink);
+  margin: 0;
+}
+
+.why-right-visual {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 56px);
+}
+
+.why-editorial-card {
+  max-width: 520px;
+  padding: clamp(28px, 3.5vw, 44px);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.why-editorial-badge {
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  margin-bottom: 14px;
+}
+
+.why-editorial-heading {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(26px, 2.8vw, 38px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 16px 0;
+  color: var(--ink);
+}
+
+.why-editorial-lead {
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 14px 0;
+}
+
+.why-editorial-p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #383838;
+  margin: 0 0 10px 0;
+}
+
+/* ==========================================================================
+   PANEL 8: 3 PILLARS (Matches Mantis Frame 006 top)
+   ========================================================================== */
+.panel-pillars {
+  background: var(--bg-card);
+}
+
+.pillars-layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  height: 100%;
+  padding: clamp(28px, 4vw, 56px);
+  align-content: center;
+}
+
+.pillar-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+}
+
+.pillar-index {
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  margin-bottom: 16px;
+}
+
+.pillar-headline {
+  font-weight: 700;
+  font-size: clamp(19px, 1.8vw, 26px);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 16px 0;
+  color: var(--ink);
+}
+
+.pillar-lead-p {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0 0 12px 0;
+}
+
+.pillar-body-p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #404040;
+  margin: 0;
+}
+
+/* ==========================================================================
+   VERTICAL SECTIONS (Below Horizontal Stage)
+   ========================================================================== */
+.section-container {
+  padding: clamp(64px, 8vw, 120px) 6vw;
+  border-top: 1px solid var(--line);
+  background: var(--bg-matte);
+}
+
+.section-split {
+  display: flex;
+  gap: clamp(32px, 5vw, 64px);
+}
+
+.section-left {
+  flex: 0 0 35%;
+  max-width: 440px;
+}
+
+.section-headline {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(32px, 3.8vw, 56px);
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin: 0;
+  color: var(--ink);
+}
+
+.section-right {
+  flex: 1;
+}
+
+/* Client Logo Grid (Frame 006) */
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.client-card {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  transition: background 0.25s var(--ease);
+}
+.client-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Recognition / Impact Grid (Frame 007) */
+.awards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.award-card {
+  padding: 28px 24px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+  transition: background 0.25s var(--ease);
+}
+.award-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.award-label {
+  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--mute);
+  text-transform: uppercase;
+}
+
+.award-number {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(38px, 4vw, 56px);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+  margin-top: 16px;
+}
+
+/* Drop a brief CTA */
+.cta-drop-section {
+  padding: clamp(90px, 12vw, 150px) 6vw;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  background: var(--bg-matte);
+}
+
+.cta-container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.cta-headline {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(48px, 6vw, 92px);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin: 0 0 16px 0;
+  color: var(--ink);
+}
+
+.cta-subhead {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #383838;
+  max-width: 480px;
+  margin: 0 auto 36px;
+}
+
+.cta-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--ink);
+  color: #fff;
+  padding: 14px 32px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  transition: transform 0.25s var(--ease), background 0.25s var(--ease);
+}
+.cta-action-btn:hover {
+  transform: translateY(-2px);
+  background: #222;
+}
+
+/* Footer */
+.services-footer {
+  padding: 36px 6vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  background: var(--bg-matte);
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.footer-links a {
+  color: var(--ink);
+  text-decoration: none;
+  margin-right: 24px;
+  transition: opacity 0.2s;
+}
+.footer-links a:hover {
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Tablets & Mobile)
+   ========================================================================== */
+@media (max-width: 900px) {
+  :root {
+    --header-h: 52px;
+    --panel-w: 92vw;
+  }
+
+  .services-header {
+    padding: 0 18px;
+  }
+  .live-clock .clock-city {
+    display: none;
+  }
+
+  .service-panel {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - var(--header-h) - 16px);
+    max-height: none;
+  }
+
+  .panel-info {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 24px;
+  }
+
+  .panel-visual {
+    width: 100%;
+    height: 340px;
+    flex: none;
+  }
+
+  .why-split-container {
+    flex-direction: column;
+  }
+
+  .why-left-lead {
+    flex: none;
+    padding: 24px;
+  }
+
+  .why-right-visual {
+    padding: 24px;
+  }
+
+  .pillars-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 24px;
+  }
+
+  .section-split {
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .section-left {
+    flex: none;
+    max-width: 100%;
+  }
+
+  .clients-grid,
+  .awards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-footer {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  .footer-links a {
+    margin: 0 12px;
+  }
+}
