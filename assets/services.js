@@ -6,18 +6,11 @@
 (function() {
   'use strict';
 
-  // Config
-  const CITY = 'New York City';
-
   // DOM Elements
   const stage = document.getElementById('services-stage');
   const strip = document.getElementById('horizontal-strip');
   const canvas = document.getElementById('c');
   const visualSlots = Array.from(document.querySelectorAll('.panel-visual'));
-
-  // Clock elements
-  const clockCityEl = document.getElementById('clock-city');
-  const clockTimeEl = document.getElementById('clock-time');
 
   // Three.js and animation variables
   let renderer = null, scene = null, camera = null;
@@ -26,36 +19,6 @@
   let scrollTriggerInstance = null;
   let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
   let clock = null;
-
-  // ==========================================================================
-  // 1. LIVE CLOCK (Matches Mantis "New York City 02:27:35")
-  // ==========================================================================
-  function initClock() {
-    if (!clockTimeEl) return;
-
-    if (clockCityEl) {
-      clockCityEl.textContent = CITY.toUpperCase();
-    }
-
-    function updateTime() {
-      const now = new Date();
-      try {
-        const formatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-          timeZone: 'America/New_York'
-        });
-        clockTimeEl.textContent = formatter.format(now);
-      } catch (e) {
-        clockTimeEl.textContent = now.toTimeString().split(' ')[0];
-      }
-    }
-
-    updateTime();
-    setInterval(updateTime, 1000);
-  }
 
   // ==========================================================================
   // 2. WEBGL HERO BLOB SCENE (EXACTLY 1 BLOB PER SERVICE SECTION)
@@ -278,7 +241,6 @@
   // 4. BOOTSTRAP
   // ==========================================================================
   function init() {
-    initClock();
     initWebGL();
     initScroll();
   }
