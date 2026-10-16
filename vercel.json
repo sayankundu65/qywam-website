@@ -8,11 +8,6 @@
       "has": [{ "type": "host", "value": "qywam.com" }],
       "destination": "https://www.qywam.com/:path*",
       "permanent": true
-    },
-    {
-      "source": "/Qywam Landing (4).html",
-      "destination": "/",
-      "permanent": true
     }
   ],
   "headers": [
@@ -31,23 +26,25 @@
       ]
     },
     {
-      "source": "/assets/(three.min.js|vendor/(.*))",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "source": "/assets/vendor/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     },
     {
-      "source": "/assets/(app|analytics|contact|blob-engine|services|services-env).js",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }]
-    },
-    {
-      "source": "/assets/(site.css|services.css|og-image.jpg)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
+      "source": "/assets/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
     },
     {
       "source": "/favicon.svg",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "headers": [
         { "key": "Cache-Control", "value": "no-store" },
         { "key": "X-Robots-Tag", "value": "noindex" }
